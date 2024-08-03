@@ -20,8 +20,7 @@
   "imports": {
     "fresh": "jsr:@fresh/core@^2.0.0-alpha.19",
     "preact": "npm:preact@^10.22.1",
-    "@preact/signals": "npm:@preact/signals@^1.2.3",
-    "paper.css": "https://unpkg.com/papercss@1.9.2/dist/paper.min.css"
+    "@preact/signals": "npm:@preact/signals@^1.2.3"
   },
   "compilerOptions": {
     "lib": [
