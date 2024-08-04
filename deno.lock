@@ -24,6 +24,7 @@
       "npm:esbuild-wasm@0.20.2": "npm:esbuild-wasm@0.20.2",
       "npm:esbuild@0.20.2": "npm:esbuild@0.20.2",
       "npm:preact-render-to-string@^6.4.2": "npm:preact-render-to-string@6.5.5_preact@10.22.1",
+      "npm:preact@10.22.1": "npm:preact@10.22.1",
       "npm:preact@^10.22.0": "npm:preact@10.22.1",
       "npm:preact@^10.22.1": "npm:preact@10.22.1"
     },

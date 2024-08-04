@@ -1,0 +1,66 @@
+@layer theme {
+	html {
+		--theme--light: var(--theme, );
+		--theme--dark: var(--theme, );
+		--theme: var(--theme--light);
+		color-scheme: var(--theme--light, light) var(--theme--dark, dark);
+	}
+
+	@media (prefers-color-scheme: dark) {
+		html {
+			--theme: var(--theme--dark);
+		}
+	}
+
+	html[data-theme="light"] {
+		--theme: var(--theme--light)
+	}
+
+	html[data-theme="dark"] {
+		--theme: var(--theme--dark);
+	}
+}
+
+@layer page {
+	@media screen {
+		html {
+			background-color: var(--theme--light, white) var(--theme--dark, black);
+		}
+		
+		body {
+			filter: var(--theme--dark, invert(1) hue-rotate(180deg));
+		}
+	}
+
+	::selection {
+		background-color: black;
+		color: white;
+	}
+
+	.isthisalogo {
+		font-size: 2rem;
+	}
+
+	.form-group {
+		margin: 0;
+	}
+
+	h1 {
+		font-size: 3rem;
+	}
+
+	summary {
+		cursor: pointer;
+		font-size: 1.5rem;
+	}
+
+	.hero {
+		display: grid;
+		place-items: center;
+		text-align: center;
+	}
+
+	p {
+		max-inline-size: 60ch;
+	}
+}
