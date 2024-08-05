@@ -1,6 +1,6 @@
-import type { getXkcd } from "../api/getXkcd.ts";
+import type { XkcdComic } from "../api/getXkcd.ts";
 
-export function Comic({ xkcd }: { xkcd: Awaited<ReturnType<typeof getXkcd>> }) {
+export function Comic({ xkcd }: { xkcd: XkcdComic }) {
 	const { num, title, img, alt } = xkcd;
 
 	return (

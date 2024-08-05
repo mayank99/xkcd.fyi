@@ -3,10 +3,12 @@ export async function getXkcd(number?: number) {
 		? `https://xkcd.com/${number}/info.0.json`
 		: `https://xkcd.com/info.0.json`;
 
-	return await fetch(url).then((r) => r.json()) as XkcdComic;
+	return await fetch(url).then((r) => r.ok ? r.json() : null) as
+		| XkcdComic
+		| null;
 }
 
-type XkcdComic = {
+export type XkcdComic = {
 	num: number;
 	title: string;
 	transcript: string;
