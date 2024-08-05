@@ -78,3 +78,9 @@
 		outline-offset: 2px;
 	}
 }
+
+@layer utilities {
+	.white-space-preserve {
+		white-space: preserve;
+	}
+}

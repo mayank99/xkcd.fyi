@@ -1,6 +1,9 @@
+import type { VNode } from "preact";
 import type { XkcdComic } from "../api/getXkcd.ts";
 
-export function Comic({ xkcd }: { xkcd: XkcdComic }) {
+export function Comic(
+	{ xkcd, transcript }: { xkcd: XkcdComic; transcript?: VNode },
+) {
 	const { num, title, img, alt } = xkcd;
 
 	return (
@@ -15,10 +18,7 @@ export function Comic({ xkcd }: { xkcd: XkcdComic }) {
 				<p>{alt}</p>
 			</div>
 
-			<details>
-				<summary>Transcript</summary>
-				<p>TODO</p>
-			</details>
+			{transcript}
 
 			<div class="row margin-top-large">
 				<a
