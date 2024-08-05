@@ -7,10 +7,13 @@ import { getTranscript } from "../api/getTranscript.ts";
 import { Transcript } from "../components/Transcript.tsx";
 
 export const handler = define.handlers({
-	GET: async ({ params }) => {
+	GET: async ({ params, state }) => {
 		const xkcd = await getXkcd(Number(params.number));
 		if (!xkcd) throw new HttpError(404);
 		const transcript = await getTranscript(xkcd);
+
+		// for <head>
+		state.title = `${xkcd.num}: ${xkcd.title}`;
 
 		return page({ xkcd, transcript }, {
 			headers: { "Cache-Control": "public, max-age=1800" },
