@@ -26,8 +26,8 @@ export async function getTranscript(xkcd: XkcdComic) {
 	const html = await fetchTranscript(url);
 	if (html) {
 		await kv.set(["transcripts", String(xkcd.num)], html, {
-			// bust cache for recently published comics after two hours
-			expireIn: isRecent ? 2 * ONE_HOUR : 30 * ONE_DAY,
+			// bust cache for recently published comics after a few hours
+			expireIn: isRecent ? 4 * ONE_HOUR : 30 * ONE_DAY,
 		});
 	}
 
@@ -35,6 +35,8 @@ export async function getTranscript(xkcd: XkcdComic) {
 }
 
 export async function fetchTranscript(url: string) {
+	console.log("Fetching", url);
+
 	const page = await fetch(url).then((r) => r.ok ? r.text() : "");
 	if (!page) return "";
 
