@@ -81,6 +81,6 @@
 
 @layer utilities {
 	.white-space-preserve {
-		white-space: preserve;
+		white-space: pre-wrap;
 	}
 }
