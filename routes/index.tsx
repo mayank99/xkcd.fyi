@@ -8,10 +8,7 @@ import { Transcript } from "../components/Transcript.tsx";
 export default async function Page() {
   const latestXkcd = await getXkcd();
   if (!latestXkcd) throw new HttpError(404);
-
-  const transcript = latestXkcd.transcript
-    ? { text: latestXkcd.transcript }
-    : { html: await getTranscript(latestXkcd.num) };
+  const transcript = await getTranscript(latestXkcd);
 
   return (
     <>

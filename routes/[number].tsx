@@ -10,10 +10,7 @@ export const handler = define.handlers({
 	GET: async ({ params }) => {
 		const xkcd = await getXkcd(Number(params.number));
 		if (!xkcd) throw new HttpError(404);
-
-		const transcript = xkcd.transcript
-			? { text: xkcd.transcript }
-			: { html: await getTranscript(xkcd.num) };
+		const transcript = await getTranscript(xkcd);
 
 		return page({ xkcd, transcript });
 	},
