@@ -1,19 +1,31 @@
-import { HttpError } from "fresh";
+import { HttpError, page } from "fresh";
 import { getXkcd } from "../api/getXkcd.ts";
 import { Comic } from "../components/Comic.tsx";
 import { Header } from "../components/Header.tsx";
 import { getTranscript } from "../api/getTranscript.ts";
 import { Transcript } from "../components/Transcript.tsx";
+import { define } from "../utils.ts";
 
-export default async function Page() {
-  const latestXkcd = await getXkcd();
-  if (!latestXkcd) throw new HttpError(404);
-  const transcript = await getTranscript(latestXkcd);
+export const handler = define.handlers({
+  GET: async () => {
+    const latestXkcd = await getXkcd();
+    if (!latestXkcd) throw new HttpError(404);
+    const transcript = await getTranscript(latestXkcd);
 
+    return page({ latestXkcd, transcript }, {
+      headers: { "Cache-Control": "public, max-age=600" },
+    });
+  },
+});
+
+export default define.page<typeof handler>(({ data }) => {
   return (
     <>
       <Header />
-      <Comic xkcd={latestXkcd} transcript={<Transcript {...transcript} />} />
+      <Comic
+        xkcd={data.latestXkcd}
+        transcript={<Transcript {...data.transcript} />}
+      />
     </>
   );
-}
+});

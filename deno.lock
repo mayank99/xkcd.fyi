@@ -20,6 +20,7 @@
       "jsr:@std/path@1.0.0-rc.1": "jsr:@std/path@1.0.0-rc.1",
       "jsr:@std/path@^0.225.2": "jsr:@std/path@0.225.2",
       "jsr:@std/semver@^0.224.3": "jsr:@std/semver@0.224.3",
+      "npm:@preact/signals@1.2.3": "npm:@preact/signals@1.2.3_preact@10.22.1",
       "npm:@preact/signals@^1.2.3": "npm:@preact/signals@1.2.3_preact@10.22.1",
       "npm:esbuild-wasm@0.20.2": "npm:esbuild-wasm@0.20.2",
       "npm:esbuild@0.20.2": "npm:esbuild@0.20.2",

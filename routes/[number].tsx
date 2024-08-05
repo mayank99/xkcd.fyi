@@ -12,7 +12,9 @@ export const handler = define.handlers({
 		if (!xkcd) throw new HttpError(404);
 		const transcript = await getTranscript(xkcd);
 
-		return page({ xkcd, transcript });
+		return page({ xkcd, transcript }, {
+			headers: { "Cache-Control": "public, max-age=1800" },
+		});
 	},
 });
 
