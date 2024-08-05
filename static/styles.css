@@ -63,4 +63,18 @@
 	p {
 		max-inline-size: 60ch;
 	}
+
+	.paper-switch-2 input[type="checkbox"] {
+		height: 1.5rem;
+		width: unset;
+		opacity: unset;
+		appearance: none;
+		border: none;
+	}
+
+	:focus-visible {
+		outline: solid !important;
+		outline-width: 3px;
+		outline-offset: 2px;
+	}
 }
