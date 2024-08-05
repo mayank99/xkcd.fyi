@@ -1,4 +1,6 @@
-export function Comic({ xkcd }: { xkcd: Record<string, string> }) {
+import type { getXkcd } from "../api/getXkcd.ts";
+
+export function Comic({ xkcd }: { xkcd: Awaited<ReturnType<typeof getXkcd>> }) {
 	const { num, title, img, alt } = xkcd;
 
 	return (
