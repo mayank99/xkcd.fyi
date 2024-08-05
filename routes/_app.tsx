@@ -1,3 +1,4 @@
+import { asset } from "fresh/runtime";
 import { define } from "../utils.ts";
 
 export default define.page(({ Component, state }) => {
@@ -10,8 +11,8 @@ export default define.page(({ Component, state }) => {
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>{title}</title>
         <meta property="og:title" content={title} />
-        <link rel="stylesheet" href="/paper.css" />
-        <link rel="stylesheet" href="/styles.css" />
+        <link rel="stylesheet" href={asset("/paper.css")} />
+        <link rel="stylesheet" href={asset("/styles.css")} />
       </head>
       <body>
         <Component />
