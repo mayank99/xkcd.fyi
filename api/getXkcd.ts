@@ -10,7 +10,7 @@ export async function getXkcd(number?: number) {
 
 	const response = await cachedFetch(url, { duration: cacheDuration });
 
-	return response.ok ? response.json() : null as
+	return (response.ok ? await response.json() : null) as
 		| XkcdComic
 		| null;
 }
@@ -41,9 +41,10 @@ async function cachedFetch(url: string, { duration }: { duration: number }) {
 
 	const response = await fetch(url);
 	if (response.ok) {
-		const headers = new Headers(response.headers);
+		const clonedResponse = response.clone();
+		const headers = new Headers(clonedResponse.headers);
 		headers.set("x-cached-at", now.getTime().toString());
-		await CACHE.put(url, new Response(response.body, { headers }));
+		await CACHE.put(url, new Response(clonedResponse.body, { headers }));
 	}
 	return response;
 }
