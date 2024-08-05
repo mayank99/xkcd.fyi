@@ -5,6 +5,7 @@ import { define } from "../utils.ts";
 import { getXkcd } from "../api/getXkcd.ts";
 import { getTranscript } from "../api/getTranscript.ts";
 import { Transcript } from "../components/Transcript.tsx";
+import { Footer } from "../components/Footer.tsx";
 
 export const handler = define.handlers({
 	GET: async ({ params, state }) => {
@@ -15,7 +16,7 @@ export const handler = define.handlers({
 		// for <head>
 		state.title = `${xkcd.num}: ${xkcd.title}`;
 
-		return page({ xkcd, transcript }, {
+		return page({ xkcd, transcript, latestXkcd: await getXkcd() }, {
 			headers: { "Cache-Control": "public, max-age=1800" },
 		});
 	},
@@ -28,6 +29,10 @@ export default define.page<typeof handler>(({ data }) => {
 			<Comic
 				xkcd={data.xkcd}
 				transcript={<Transcript {...data.transcript} />}
+			/>
+			<Footer
+				num={data.xkcd.num}
+				latestNum={data.latestXkcd?.num || Number.MAX_VALUE}
 			/>
 		</>
 	);

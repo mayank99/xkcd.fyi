@@ -91,6 +91,16 @@
 		content: "🔗" / "";
 		font-size: 1.5rem;
 	}
+
+	.paginator {
+		display: flex;
+		justify-content: center;
+		gap: 12px;
+	}
+
+	.paginator a[aria-current="page"] {
+		font-size: 1.25rem;
+	}
 }
 
 @layer utilities {

@@ -5,6 +5,7 @@ import { Header } from "../components/Header.tsx";
 import { getTranscript } from "../api/getTranscript.ts";
 import { Transcript } from "../components/Transcript.tsx";
 import { define } from "../utils.ts";
+import { Footer } from "../components/Footer.tsx";
 
 export const handler = define.handlers({
   GET: async () => {
@@ -25,6 +26,10 @@ export default define.page<typeof handler>(({ data }) => {
       <Comic
         xkcd={data.latestXkcd}
         transcript={<Transcript {...data.transcript} />}
+      />
+      <Footer
+        num={data.latestXkcd.num}
+        latestNum={data.latestXkcd.num}
       />
     </>
   );

@@ -16,7 +16,7 @@ export async function getTranscript(xkcd: XkcdComic) {
 
 	const cached = await kv.get(["transcripts", String(xkcd.num)]);
 	if (cached.value) {
-		return { html: cached.value };
+		return { html: String(cached.value) };
 	}
 
 	const now = new Date();
