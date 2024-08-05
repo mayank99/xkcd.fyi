@@ -1,18 +1,16 @@
-const CACHE = await caches.open("xkcd-info/v0");
+const kv = await Deno.openKv();
+
 const ONE_HOUR = 3_600_000;
+const ONE_DAY = 24 * ONE_HOUR;
 
 export async function getXkcd(number?: number) {
 	const url = number
 		? `https://xkcd.com/${number}/info.0.json`
 		: `https://xkcd.com/info.0.json`;
-
-	const cacheDuration = number ? 24 * ONE_HOUR : 0.25 * ONE_HOUR;
+	const cacheDuration = number ? 30 * ONE_DAY : 0.5 * ONE_HOUR;
 
 	const response = await cachedFetch(url, { duration: cacheDuration });
-
-	return (response.ok ? await response.json() : null) as
-		| XkcdComic
-		| null;
+	return response as XkcdComic | null;
 }
 
 export type XkcdComic = {
@@ -28,23 +26,19 @@ export type XkcdComic = {
 
 /** caches response for the specified ms */
 async function cachedFetch(url: string, { duration }: { duration: number }) {
-	const cached = await CACHE.match(url);
-	const now = new Date();
-
-	if (cached) {
-		const cachedAt = Number(cached.headers.get("x-cached-at"));
-		if ((now.getTime() - cachedAt) > duration) {
-			await CACHE.delete(url);
-		}
-		return cached;
+	const cached = await kv.get(["xkcd-info", url]);
+	if (cached.value) {
+		return cached.value;
 	}
 
 	const response = await fetch(url);
 	if (response.ok) {
-		const clonedResponse = response.clone();
-		const headers = new Headers(clonedResponse.headers);
-		headers.set("x-cached-at", now.getTime().toString());
-		await CACHE.put(url, new Response(clonedResponse.body, { headers }));
+		const info = await response.json();
+		if (info) {
+			await kv.set(["xkcd-info", url], info, { expireIn: duration });
+		}
+		return info;
 	}
-	return response;
+
+	return null;
 }

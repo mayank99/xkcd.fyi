@@ -1,9 +1,10 @@
 import { parseHTML } from "linkedom";
 import type { XkcdComic } from "./getXkcd.ts";
 
-const CACHE = await caches.open("xkcd-transcripts/v0");
-const ONE_WEEK = 604_800_000;
+const kv = await Deno.openKv();
+
 const ONE_HOUR = 3_600_000;
+const ONE_DAY = 24 * ONE_HOUR;
 
 export async function getTranscript(xkcd: XkcdComic) {
 	// use original transcript if found
@@ -12,29 +13,23 @@ export async function getTranscript(xkcd: XkcdComic) {
 	}
 
 	const url = `https://explainxkcd.com/wiki/index.php/${xkcd.num}`;
-	const now = new Date();
-	const publishDate = new Date([xkcd.year, xkcd.month, xkcd.day].join("-"));
 
-	const cached = await CACHE.match(url);
-	if (cached) {
-		const isRecent = (now.getTime() - publishDate.getTime()) < ONE_WEEK;
-
-		// bust cache for recently published comics after two hours
-		if (isRecent) {
-			const cachedAt = Number(cached.headers.get("x-cached-at"));
-			if ((now.getTime() - cachedAt) > (ONE_HOUR * 2)) {
-				await CACHE.delete(url);
-			}
-		}
-
-		return { html: await cached.text() };
+	const cached = await kv.get(["transcripts", String(xkcd.num)]);
+	if (cached.value) {
+		return { html: cached.value };
 	}
 
-	const html = await fetchTranscript(url);
+	const now = new Date();
+	const publishDate = new Date([xkcd.year, xkcd.month, xkcd.day].join("-"));
+	const isRecent = (now.getTime() - publishDate.getTime()) < (7 * ONE_DAY);
 
-	const response = new Response(html);
-	response.headers.set("x-cached-at", now.getTime().toString());
-	await CACHE.put(url, response.clone());
+	const html = await fetchTranscript(url);
+	if (html) {
+		await kv.set(["transcripts", String(xkcd.num)], html, {
+			// bust cache for recently published comics after two hours
+			expireIn: isRecent ? 2 * ONE_HOUR : 30 * ONE_DAY,
+		});
+	}
 
 	return { html };
 }
