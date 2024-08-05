@@ -77,10 +77,36 @@
 		outline-width: 3px;
 		outline-offset: 2px;
 	}
+
+	hgroup {
+		text-wrap: balance;
+	}
+
+	hgroup h1 {
+		display: inline;
+	}
+
+	.permalink::after {
+		content: "🔗";
+		content: "🔗" / "";
+		font-size: 1.5rem;
+	}
 }
 
 @layer utilities {
 	.white-space-preserve {
 		white-space: pre-wrap;
+	}
+
+	.visually-hidden {
+		clip-path: inset(50%) !important;
+		white-space: nowrap !important;
+		user-select: none !important;
+		border: 0 !important;
+		width: 1px !important;
+		height: 1px !important;
+		margin: -1px !important;
+		position: absolute !important;
+		overflow: hidden !important;
 	}
 }
