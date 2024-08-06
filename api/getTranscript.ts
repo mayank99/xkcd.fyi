@@ -58,6 +58,10 @@ export async function fetchTranscript(url: string) {
 		if (element.id === "Discussion") break;
 		if (element.localName === "table") continue;
 		if (["h1", "h2", "h3", "h4", "h5"].includes(element.localName)) break;
+		if (
+			element.localName === "p" && element.childElementCount === 1 &&
+			element.firstElementChild?.localName === "br"
+		) continue;
 
 		transcript += element.outerHTML;
 	}
