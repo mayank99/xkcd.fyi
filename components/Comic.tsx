@@ -8,7 +8,7 @@ export function Comic(
 
 	return (
 		<main class="paper container container-sm border margin-top-large margin-bottom-large">
-			<div class="hero section">
+			<div class="hero">
 				<hgroup class="margin-bottom-large">
 					<h1>#{num}: {title}</h1>
 					<a class="permalink margin-left" href={`/${num}`}>
@@ -23,10 +23,15 @@ export function Comic(
 					class="no-border"
 				/>
 
-				<p>{alt}</p>
-			</div>
+				<div class="transcript-container">{transcript}</div>
 
-			{transcript}
+				<p>
+					<span class="visually-hidden">Title text:</span>
+					{alt}
+				</p>
+
+				<hr />
+			</div>
 
 			<div class="row margin-top-large">
 				<a

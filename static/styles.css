@@ -60,6 +60,13 @@
 		text-align: center;
 	}
 
+	.transcript-container {
+		grid-row-start: 5;
+		justify-self: start;
+		text-align: start;
+		margin-block-start: 1rem;
+	}
+
 	p {
 		max-inline-size: 60ch;
 	}
