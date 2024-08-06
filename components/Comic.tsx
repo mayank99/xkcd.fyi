@@ -20,6 +20,7 @@ export function Comic(
 				<img
 					src={img}
 					alt="XKCD comic, described below."
+					srcset={`${img.replace(".png", "_2x.png")} 2x`}
 					class="no-border"
 				/>
 
