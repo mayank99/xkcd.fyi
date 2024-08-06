@@ -22,12 +22,15 @@ export async function getTranscript(xkcd: XkcdComic) {
 	const now = new Date();
 	const publishDate = new Date([xkcd.year, xkcd.month, xkcd.day].join("-"));
 	const isRecent = (now.getTime() - publishDate.getTime()) < (7 * ONE_DAY);
+	const isBrandNew = (now.getTime() - publishDate.getTime()) < (2 * ONE_DAY);
 
 	const html = await fetchTranscript(url);
 	if (html) {
 		await kv.set(["transcripts", String(xkcd.num)], html, {
-			// bust cache for recently published comics after a few hours
-			expireIn: isRecent ? 4 * ONE_HOUR : 30 * ONE_DAY,
+			expireIn: isRecent
+				// bust cache for recently published comics after a few hours
+				? (isBrandNew ? 3 * ONE_HOUR : 6 * ONE_HOUR)
+				: 45 * ONE_DAY,
 		});
 	}
 

@@ -7,7 +7,7 @@ export async function getXkcd(number?: number) {
 	const url = number
 		? `https://xkcd.com/${number}/info.0.json`
 		: `https://xkcd.com/info.0.json`;
-	const cacheDuration = number ? 30 * ONE_DAY : 0.5 * ONE_HOUR;
+	const cacheDuration = number ? 45 * ONE_DAY : 0.5 * ONE_HOUR;
 
 	const response = await cachedFetch(url, { duration: cacheDuration });
 	return response as XkcdComic | null;
