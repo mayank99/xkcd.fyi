@@ -15,7 +15,7 @@ export function Switch(
 					role="switch"
 					{...props}
 				/>
-				<span class="paper-switch-slider round" aria-hidden></span>
+				<span class="paper-switch-slider round" aria-hidden="true"></span>
 			</span>
 			<span class="paper-switch-2-label">
 				{label}

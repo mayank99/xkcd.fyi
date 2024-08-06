@@ -4,13 +4,13 @@ export function Footer({ num, latestNum }: { num: number; latestNum: number }) {
 			<nav class="paginator">
 				{num > 1 && (
 					<a href={`/${num - 1}`}>
-						<span aria-hidden>«</span> Previous
+						<span aria-hidden="true">«</span> Previous
 					</a>
 				)}
 				<a href={`/${num}`} aria-current="page">{num}</a>
 				{num < latestNum && (
 					<a href={`/${num + 1}`}>
-						Next <span aria-hidden>»</span>
+						Next <span aria-hidden="true">»</span>
 					</a>
 				)}
 			</nav>

@@ -13,7 +13,7 @@ export function Comic(
 					<h1>#{num}: {title}</h1>
 					<a class="permalink margin-left" href={`/${num}`}>
 						<span class="visually-hidden">Permalink</span>
-						<LinkIcon aria-hidden />
+						<LinkIcon aria-hidden="true" />
 					</a>
 				</hgroup>
 
