@@ -9,7 +9,7 @@ export function Comic(
 	return (
 		<main class="paper container container-sm border margin-top-large margin-bottom-large">
 			<div class="hero">
-				<hgroup class="margin-bottom-large">
+				<hgroup role="group" class="margin-bottom-large">
 					<h1>#{num}: {title}</h1>
 					<a class="permalink margin-left" href={`/${num}`}>
 						<span class="visually-hidden">Permalink</span>

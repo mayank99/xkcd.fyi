@@ -62,7 +62,7 @@
 
 	.transcript-container {
 		grid-row-start: 5;
-		justify-self: start;
+		justify-self: stretch;
 		text-align: start;
 		margin-block-start: 1rem;
 	}
