@@ -22,6 +22,7 @@ export function Comic(
 					alt="XKCD comic, described below."
 					srcset={`${img.replace(".png", "_2x.png")} 2x`}
 					class="no-border"
+					onerror="this.removeAttribute('srcset');this.removeAttribute('onerror');"
 				/>
 
 				<div class="transcript-container">{transcript}</div>
