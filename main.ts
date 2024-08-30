@@ -1,8 +1,8 @@
-import { App, fsRoutes, staticFiles } from "fresh";
+import { App, fsRoutes, staticFiles, trailingSlashes } from "fresh";
 import { type State } from "./utils.ts";
 
 export const app = new App<State>();
-app.use(staticFiles());
+app.use(staticFiles()).use(trailingSlashes("always"));
 
 await fsRoutes(app, {
   dir: "./",
