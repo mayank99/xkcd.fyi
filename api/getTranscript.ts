@@ -1,7 +1,7 @@
 import { parseHTML } from "linkedom";
 import type { XkcdComic } from "./getXkcd.ts";
 
-const kv = await Deno.openKv();
+const CACHE = await caches.open("xkcd-transcripts/v0");
 
 const ONE_HOUR = 3_600_000;
 const ONE_DAY = 24 * ONE_HOUR;
@@ -14,9 +14,10 @@ export async function getTranscript(xkcd: XkcdComic) {
 
 	const url = `https://explainxkcd.com/wiki/index.php/${xkcd.num}`;
 
-	const cached = await kv.get(["transcripts", String(xkcd.num)]);
-	if (cached.value) {
-		return { html: String(cached.value) };
+	const cached = await CACHE.match(url);
+
+	if (cached) {
+		return { html: await cached.text() };
 	}
 
 	const now = new Date();
@@ -26,12 +27,20 @@ export async function getTranscript(xkcd: XkcdComic) {
 
 	const html = await fetchTranscript(url);
 	if (html) {
-		await kv.set(["transcripts", String(xkcd.num)], html, {
-			expireIn: isRecent
-				// bust cache for recently published comics after a few hours
-				? (isBrandNew ? 3 * ONE_HOUR : 6 * ONE_HOUR)
-				: 45 * ONE_DAY,
-		});
+		await CACHE.put(
+			url,
+			new Response(html, {
+				headers: {
+					"Expires": new Date(
+						Date.now() +
+							(isRecent
+								// bust cache for recently published comics after a few hours
+								? (isBrandNew ? 3 * ONE_HOUR : 6 * ONE_HOUR)
+								: 45 * ONE_DAY),
+					).toUTCString(),
+				},
+			}),
+		);
 	}
 
 	return { html };
