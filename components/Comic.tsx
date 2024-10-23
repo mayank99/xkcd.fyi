@@ -10,7 +10,9 @@ export function Comic(
 		<main class="paper container container-sm border margin-top-large margin-bottom-large">
 			<div class="hero">
 				<hgroup role="group" class="margin-bottom-large">
-					<h1>#{num}: {title}</h1>
+					<h1>
+						#{num}: <span dangerouslySetInnerHTML={{ __html: title }} />
+					</h1>
 					<a class="permalink margin-left" href={`/${num}`}>
 						<span class="visually-hidden">Permalink</span>
 						<LinkIcon aria-hidden="true" />
@@ -29,7 +31,7 @@ export function Comic(
 
 				<p>
 					<span class="visually-hidden">Title text:</span>
-					{alt}
+					<span dangerouslySetInnerHTML={{ __html: alt }} />
 				</p>
 
 				<hr />
