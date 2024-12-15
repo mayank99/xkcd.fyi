@@ -5,7 +5,7 @@ export default define.page(({ Component, state }) => {
   const title = `${state.title ? `${state.title} | ` : ""} xkcd.fyi`;
 
   return (
-    <html>
+    <html lang="en">
       <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
