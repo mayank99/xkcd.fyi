@@ -18,8 +18,7 @@ export function Transcript({ text, html }: { text?: string; html?: string }) {
 				{html && (
 					<p class="text-right">
 						<small>
-							(Sourced from{" "}
-							<a href="https://explainxkcd.com">explainxkcd.com</a>)
+							(Sourced from <a href="https://explainxkcd.com">explainxkcd.com</a>)
 						</small>
 					</p>
 				)}

@@ -6,7 +6,7 @@ import { app } from "./main.ts";
 const builder = new Builder();
 
 if (Deno.args.includes("build")) {
-  await builder.build(app);
+	await builder.build(app);
 } else {
-  await builder.listen(app);
+	await builder.listen(app);
 }

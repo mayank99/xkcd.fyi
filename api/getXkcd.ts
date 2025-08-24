@@ -3,9 +3,7 @@ const CACHE = await caches.open("xkcd-info/v0");
 const ONE_HOUR = 3_600_000;
 
 export async function getXkcd(number?: number) {
-	const url = number
-		? `https://xkcd.com/${number}/info.0.json`
-		: `https://xkcd.com/info.0.json`;
+	const url = number ? `https://xkcd.com/${number}/info.0.json` : `https://xkcd.com/info.0.json`;
 
 	// Cache latest comic for 30 mins, and everything else indefinitely
 	const cacheDuration = number ? undefined : 0.5 * ONE_HOUR;
