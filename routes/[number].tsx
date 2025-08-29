@@ -11,8 +11,8 @@ const ONE_HOUR = 60 * 60;
 const ONE_DAY = 24 * ONE_HOUR;
 
 const cacheControl = {
-	latest: `public, max-age=60, s-max-age=${ONE_HOUR}, stale-while-revalidate=${ONE_HOUR}`,
-	old: `public, max-age=60, s-max-age=${ONE_DAY * 30}, stale-while-revalidate=${ONE_DAY * 30 * 3}`, // longer for old comics
+	latest: `public, max-age=60, s-maxage=${ONE_HOUR}, stale-while-revalidate=${ONE_HOUR}`,
+	old: `public, max-age=60, s-maxage=${ONE_DAY * 30}, stale-while-revalidate=${ONE_DAY * 30 * 3}`, // longer for old comics
 };
 
 export const handler = define.handlers({
