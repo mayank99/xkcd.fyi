@@ -15,7 +15,7 @@ export const handler = define.handlers({
 
 		return page({ latestXkcd, transcript }, {
 			headers: {
-				"Cache-Control": "public, max-age=60, s-maxage=1800, stale-while-revalidate=1800",
+				"Cache-Control": "public, max-age=60",
 			},
 		});
 	},
