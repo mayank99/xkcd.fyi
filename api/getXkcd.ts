@@ -29,9 +29,9 @@ export async function getXkcd(number?: number) {
 	// Until it does, the latest is the newest comic stored.
 	if (Date.now() - latestCheckedAt > 0.5 * ONE_HOUR) {
 		latestCheckedAt = Date.now();
-		latestCheck = fetchXkcd(`https://xkcd.com/info.0.json`);
+		latestCheck = fetchXkcd(`https://xkcd.com/info.0.json`); // runs in background
 	}
-	await latestCheck; // requests that arrive during a check will wait for it
+	if (!selectLatest.get()) await latestCheck;
 
 	return (selectLatest.get() as XkcdComic | undefined) ?? null;
 }
@@ -48,7 +48,7 @@ export type XkcdComic = {
 async function fetchXkcd(url: string) {
 	console.log("Fetching", url);
 	try {
-		const response = await fetch(url);
+		const response = await fetch(url, { signal: AbortSignal.timeout(10_000) });
 		if (!response.ok) return;
 		const json = await response.json();
 

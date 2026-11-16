@@ -49,7 +49,8 @@ function needsRefetch(saved: Row, xkcd: XkcdComic) {
 async function fetchTranscript(url: string) {
 	console.log("Fetching", url);
 
-	const page = await fetch(url).then((r) => r.ok ? r.text() : "");
+	const page = await fetch(url, { signal: AbortSignal.timeout(10_000) })
+		.then((r) => r.ok ? r.text() : "");
 	if (!page) return "";
 
 	const { document } = parseHTML(page);
