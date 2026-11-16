@@ -1,38 +1,32 @@
-import { HttpError, page } from "fresh";
+import { type DataOf, type Handlers, HttpError, type PageProps } from "../utils.ts";
 import { getXkcd } from "../api/getXkcd.ts";
 import { Comic } from "../components/Comic.tsx";
 import { Header } from "../components/Header.tsx";
 import { getTranscript } from "../api/getTranscript.ts";
 import { Transcript } from "../components/Transcript.tsx";
-import { define } from "../utils.ts";
 import { Footer } from "../components/Footer.tsx";
 
-export const handler = define.handlers({
+export const handler = {
 	GET: async () => {
 		const latestXkcd = await getXkcd();
 		if (!latestXkcd) throw new HttpError(404);
 		const transcript = await getTranscript(latestXkcd);
 
-		return page({ latestXkcd, transcript }, {
+		return {
+			data: { latestXkcd, transcript },
 			headers: {
 				"Cache-Control": "public, max-age=60",
 			},
-		});
+		};
 	},
-});
+} satisfies Handlers<unknown>;
 
-export default define.page<typeof handler>(({ data }) => {
+export default function Page({ data }: PageProps<DataOf<typeof handler>>) {
 	return (
 		<>
 			<Header />
-			<Comic
-				xkcd={data.latestXkcd}
-				transcript={<Transcript {...data.transcript} />}
-			/>
-			<Footer
-				num={data.latestXkcd.num}
-				latestNum={data.latestXkcd.num}
-			/>
+			<Comic xkcd={data.latestXkcd} transcript={<Transcript {...data.transcript} />} />
+			<Footer num={data.latestXkcd.num} latestNum={data.latestXkcd.num} />
 		</>
 	);
-});
+}

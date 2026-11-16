@@ -7,7 +7,9 @@ export function Footer({ num, latestNum }: { num: number; latestNum: number }) {
 						<span aria-hidden="true">«</span> Previous
 					</a>
 				)}
-				<a href={`/${num}`} aria-current="page">{num}</a>
+				<a href={`/${num}`} aria-current="page">
+					{num}
+				</a>
 				{num < latestNum && (
 					<a href={`/${num + 1}`}>
 						Next <span aria-hidden="true">»</span>

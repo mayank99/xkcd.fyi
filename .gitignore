@@ -7,7 +7,12 @@
 
 # Fresh build directory
 _fresh/
+
 # npm + other dependencies
 node_modules/
 vendor/
 
+# sqlite database
+.data/
+
+.DS_Store

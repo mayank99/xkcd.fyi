@@ -3,5 +3,5 @@
 ## Development
 
 ```
-deno task dev
+npm run dev
 ```

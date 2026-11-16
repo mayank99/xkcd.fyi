@@ -1,63 +1,63 @@
 import { parseHTML } from "linkedom";
+import { db, saveTranscript, type TranscriptSource } from "../db.ts";
 import type { XkcdComic } from "./getXkcd.ts";
-
-const CACHE = await caches.open("xkcd-transcripts/v0");
 
 const ONE_HOUR = 3_600_000;
 const ONE_DAY = 24 * ONE_HOUR;
 
+type Row = {
+	source: TranscriptSource;
+	content: string | null;
+	fetched_at: number | null;
+	checked_at: number;
+};
+
+const selectTranscripts = db.prepare(
+	"SELECT source, content, fetched_at, checked_at FROM transcripts WHERE num = ?",
+);
+
 export async function getTranscript(xkcd: XkcdComic) {
+	const rows = selectTranscripts.all(xkcd.num) as Row[];
+
 	// use original transcript if found
-	if (xkcd.transcript) {
-		return { text: xkcd.transcript };
-	}
+	const original = rows.find((row) => row.source === "xkcd")?.content;
+	if (original) return { text: original };
 
-	const url = `https://explainxkcd.com/wiki/index.php/${xkcd.num}`;
+	const saved = rows.find((row) => row.source === "explainxkcd");
+	if (saved && !needsRefetch(saved, xkcd)) return { html: saved.content ?? "" };
 
-	const cached = await CACHE.match(url);
+	const url = `https://www.explainxkcd.com/wiki/index.php/${xkcd.num}`;
 
-	if (cached) {
-		return { html: await cached.text() };
-	}
+	// a failed fetch is saved like an empty result, so it isn't retried on every request
+	const html = await fetchTranscript(url).catch(() => "");
 
-	const now = new Date();
-	const publishDate = new Date([xkcd.year, xkcd.month, xkcd.day].join("-"));
-	const isRecent = (now.getTime() - publishDate.getTime()) < (7 * ONE_DAY);
-	const isBrandNew = (now.getTime() - publishDate.getTime()) < (2 * ONE_DAY);
-
-	const html = await fetchTranscript(url);
-	if (html) {
-		await CACHE.put(
-			url,
-			new Response(html, {
-				headers: {
-					"Expires": new Date(
-						Date.now() +
-							(isRecent
-								// bust cache for recently published comics after a few hours
-								? (isBrandNew ? 3 * ONE_HOUR : 6 * ONE_HOUR)
-								: 45 * ONE_DAY),
-					).toUTCString(),
-				},
-			}),
-		);
-	}
-
-	return { html };
+	saveTranscript(xkcd.num, "explainxkcd", html);
+	return { html: html || saved?.content || "" };
 }
 
-export async function fetchTranscript(url: string) {
+function needsRefetch(saved: Row, xkcd: XkcdComic) {
+	const published = Date.parse(xkcd.published);
+
+	// consider the transcript stabilized after one week
+	if (saved.fetched_at && saved.fetched_at > published + 7 * ONE_DAY) return false;
+
+	// until it stabilizes, refetch after a while
+	const retryAfter = Date.now() - published < 7 * ONE_DAY ? 6 * ONE_HOUR : ONE_DAY;
+	return Date.now() - saved.checked_at > retryAfter;
+}
+
+async function fetchTranscript(url: string) {
 	console.log("Fetching", url);
 
-	const page = await fetch(url).then((r) => r.ok ? r.text() : "");
+	const page = await fetch(url, { signal: AbortSignal.timeout(10_000) }).then((r) =>
+		r.ok ? r.text() : "",
+	);
 	if (!page) return "";
 
 	const { document } = parseHTML(page);
 	let transcript = "";
 
-	const heading = document.getElementById("Transcript")?.closest(
-		"h1, h2, h3, h4",
-	);
+	const heading = document.getElementById("Transcript")?.closest("h1, h2, h3, h4");
 
 	let element = heading;
 
@@ -68,9 +68,11 @@ export async function fetchTranscript(url: string) {
 		if (element.localName === "table") continue;
 		if (["h1", "h2", "h3", "h4", "h5"].includes(element.localName)) break;
 		if (
-			element.localName === "p" && element.childElementCount === 1 &&
+			element.localName === "p" &&
+			element.childElementCount === 1 &&
 			element.firstElementChild?.localName === "br"
-		) continue;
+		)
+			continue;
 
 		transcript += element.outerHTML;
 	}

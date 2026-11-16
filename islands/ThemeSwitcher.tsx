@@ -1,6 +1,7 @@
-import type { ComponentProps } from "preact";
+import { type ComponentProps, render } from "preact";
 import { Switch } from "../components/Switch.tsx";
-import { IS_BROWSER } from "fresh/runtime";
+
+const IS_BROWSER = typeof document !== "undefined";
 
 const initialTheme = (() => {
 	if (!IS_BROWSER) return undefined;
@@ -14,7 +15,9 @@ const initialTheme = (() => {
 		if (savedTheme) {
 			theme = savedTheme;
 		}
-	} catch { /* */ }
+	} catch {
+		/* */
+	}
 
 	document.documentElement.dataset.theme = theme;
 
@@ -26,15 +29,15 @@ export function ThemeSwitcher(props: ComponentProps<"form">) {
 		<form
 			{...props}
 			onChange={({ target }) => {
-				if (
-					!(target instanceof HTMLInputElement) || target.name !== "dark-mode"
-				) return;
+				if (!(target instanceof HTMLInputElement) || target.name !== "dark-mode") return;
 
 				const theme = target.checked ? "dark" : "light";
 				document.documentElement.dataset.theme = theme;
 				try {
 					localStorage.setItem("theme", theme);
-				} catch { /* */ }
+				} catch {
+					/* */
+				}
 			}}
 		>
 			<Switch
@@ -45,4 +48,9 @@ export function ThemeSwitcher(props: ComponentProps<"form">) {
 			/>
 		</form>
 	);
+}
+
+// Loaded in the browser by routes/_app.tsx; takes over the markup rendered in Header.tsx
+if (IS_BROWSER) {
+	render(<ThemeSwitcher />, document.getElementById("theme-switcher")!);
 }
