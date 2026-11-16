@@ -2,7 +2,7 @@ import { mkdirSync } from "node:fs";
 import { dirname } from "node:path";
 import { DatabaseSync } from "node:sqlite";
 
-const path = process.env.DB_PATH ?? ".data/xkcd.db";
+const path = process.env.DB_PATH ?? `${process.env.RAILWAY_VOLUME_MOUNT_PATH ?? ".data"}/xkcd.db`;
 mkdirSync(dirname(path), { recursive: true });
 
 export const db = new DatabaseSync(path);

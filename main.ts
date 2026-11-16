@@ -1,10 +1,11 @@
+import { readdirSync } from "node:fs";
 import { serve } from "@hono/node-server";
 import { serveStatic } from "@hono/node-server/serve-static";
 import { type Context, Hono, type Next } from "hono";
 import type { ContentfulStatusCode } from "hono/utils/http-status";
 import { h, type VNode } from "preact";
 import { renderToString } from "preact-render-to-string";
-import { client } from "./client.ts";
+import { asset, client } from "./client.ts";
 import App from "./routes/_app.tsx";
 import ErrorPage from "./routes/_error.tsx";
 import { type Handlers, HttpError, type PageProps } from "./utils.ts";
@@ -14,9 +15,7 @@ const routes = {
 	number: await import("./routes/[number].tsx"),
 };
 
-/**
- * Calls the route `handler` to load data and renders its default export (inside `_app.tsx`).
- */
+/** Calls the route `handler` to load data and renders its default export (inside `_app.tsx`). */
 function render<Data>({
 	handler,
 	default: Page,
@@ -43,12 +42,22 @@ async function trailingSlashes(c: Context, next: Next) {
 	const { pathname, search } = new URL(c.req.url);
 	if (pathname === "/" || !pathname.endsWith("/")) return next();
 
-	// Relative, so it works behind a TLS proxy. Exactly one leading slash, so that
-	// `//example.com/` can't turn it into a redirect to another site.
+	// strip extra leading and trailing slashes
 	return c.redirect("/" + pathname.replace(/^\/+|\/+$/g, "") + search, 302);
 }
 
+const staticFiles = new Set(readdirSync("./static").map((name) => `/${name}`));
+
+/** Redirects a static file's URL with the wrong query param to the correct one from `asset()`. */
+async function staleAssets(c: Context, next: Next) {
+	const { search } = new URL(c.req.url);
+	const { path } = c.req;
+	if (!search || !staticFiles.has(path) || path + search === asset(path)) return next();
+	return c.redirect(asset(path), 302);
+}
+
 export const app = new Hono()
+	.use(staleAssets)
 	.use(
 		serveStatic({
 			root: "./static",
