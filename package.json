@@ -7,7 +7,8 @@
 	"scripts": {
 		"check": "tsc",
 		"dev": "tsx watch --include \"./static/*\" main.ts",
-		"start": "tsx main.ts"
+		"start": "tsx main.ts",
+		"format": "prettier --write ."
 	},
 	"dependencies": {
 		"@hono/node-server": "^2.1.8",
@@ -20,6 +21,7 @@
 	},
 	"devDependencies": {
 		"@types/node": "^26.6.6",
+		"prettier": "^3.10.1",
 		"typescript": "^7.0.2"
 	}
 }

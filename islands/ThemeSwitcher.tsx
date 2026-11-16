@@ -15,7 +15,9 @@ const initialTheme = (() => {
 		if (savedTheme) {
 			theme = savedTheme;
 		}
-	} catch { /* */ }
+	} catch {
+		/* */
+	}
 
 	document.documentElement.dataset.theme = theme;
 
@@ -27,15 +29,15 @@ export function ThemeSwitcher(props: ComponentProps<"form">) {
 		<form
 			{...props}
 			onChange={({ target }) => {
-				if (
-					!(target instanceof HTMLInputElement) || target.name !== "dark-mode"
-				) return;
+				if (!(target instanceof HTMLInputElement) || target.name !== "dark-mode") return;
 
 				const theme = target.checked ? "dark" : "light";
 				document.documentElement.dataset.theme = theme;
 				try {
 					localStorage.setItem("theme", theme);
-				} catch { /* */ }
+				} catch {
+					/* */
+				}
 			}}
 		>
 			<Switch

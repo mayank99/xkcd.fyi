@@ -49,16 +49,15 @@ function needsRefetch(saved: Row, xkcd: XkcdComic) {
 async function fetchTranscript(url: string) {
 	console.log("Fetching", url);
 
-	const page = await fetch(url, { signal: AbortSignal.timeout(10_000) })
-		.then((r) => r.ok ? r.text() : "");
+	const page = await fetch(url, { signal: AbortSignal.timeout(10_000) }).then((r) =>
+		r.ok ? r.text() : "",
+	);
 	if (!page) return "";
 
 	const { document } = parseHTML(page);
 	let transcript = "";
 
-	const heading = document.getElementById("Transcript")?.closest(
-		"h1, h2, h3, h4",
-	);
+	const heading = document.getElementById("Transcript")?.closest("h1, h2, h3, h4");
 
 	let element = heading;
 
@@ -69,9 +68,11 @@ async function fetchTranscript(url: string) {
 		if (element.localName === "table") continue;
 		if (["h1", "h2", "h3", "h4", "h5"].includes(element.localName)) break;
 		if (
-			element.localName === "p" && element.childElementCount === 1 &&
+			element.localName === "p" &&
+			element.childElementCount === 1 &&
 			element.firstElementChild?.localName === "br"
-		) continue;
+		)
+			continue;
 
 		transcript += element.outerHTML;
 	}

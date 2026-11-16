@@ -25,14 +25,8 @@ export default function Page({ data }: PageProps<DataOf<typeof handler>>) {
 	return (
 		<>
 			<Header />
-			<Comic
-				xkcd={data.latestXkcd}
-				transcript={<Transcript {...data.transcript} />}
-			/>
-			<Footer
-				num={data.latestXkcd.num}
-				latestNum={data.latestXkcd.num}
-			/>
+			<Comic xkcd={data.latestXkcd} transcript={<Transcript {...data.transcript} />} />
+			<Footer num={data.latestXkcd.num} latestNum={data.latestXkcd.num} />
 		</>
 	);
 }

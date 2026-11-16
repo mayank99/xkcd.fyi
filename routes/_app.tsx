@@ -18,9 +18,7 @@ export default function App(props: { title?: string; children: ComponentChildren
 				<link rel="modulepreload" href={clientModule("components/Switch.tsx")} />
 				<script type="module" src={clientModule("islands/ThemeSwitcher.tsx")} />
 			</head>
-			<body>
-				{props.children}
-			</body>
+			<body>{props.children}</body>
 		</html>
 	);
 }

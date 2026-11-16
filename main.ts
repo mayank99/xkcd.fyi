@@ -49,13 +49,15 @@ async function trailingSlashes(c: Context, next: Next) {
 }
 
 export const app = new Hono()
-	.use(serveStatic({
-		root: "./static",
-		onFound: (_path, c) => {
-			// URLs from `asset()` carry a content hash
-			if (c.req.query("v")) c.header("Cache-Control", "public, max-age=31536000, immutable");
-		},
-	}))
+	.use(
+		serveStatic({
+			root: "./static",
+			onFound: (_path, c) => {
+				// URLs from `asset()` carry a content hash
+				if (c.req.query("v")) c.header("Cache-Control", "public, max-age=31536000, immutable");
+			},
+		}),
+	)
 	.use(trailingSlashes)
 	.route("/", client)
 	.get("/", render(routes.index))

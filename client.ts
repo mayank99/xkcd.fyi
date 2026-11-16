@@ -69,7 +69,7 @@ const modules = new Map<string, string>();
 /** Serves the modules above; anything else under `/_client/` falls through to a 404 */
 export const client = new Hono().get("/_client/:path{.+}", async (c, next) => {
 	const path = c.req.param("path");
-	const code = modules.get(path) ?? await load(path);
+	const code = modules.get(path) ?? (await load(path));
 	if (!code) return next();
 	modules.set(path, code);
 
