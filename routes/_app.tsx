@@ -1,8 +1,8 @@
-import { asset } from "fresh/runtime";
-import { define } from "../utils.ts";
+import { asset, clientModule, importMap } from "../client.ts";
+import type { ComponentChildren } from "preact";
 
-export default define.page(({ Component, state }) => {
-	const title = `${state.title ? `${state.title} | ` : ""} xkcd.fyi`;
+export default function App(props: { title?: string; children: ComponentChildren }) {
+	const title = `${props.title ? `${props.title} | ` : ""} xkcd.fyi`;
 
 	return (
 		<html lang="en">
@@ -13,10 +13,13 @@ export default define.page(({ Component, state }) => {
 				<meta property="og:title" content={title} />
 				<link rel="stylesheet" href={asset("/paper.css")} />
 				<link rel="stylesheet" href={asset("/styles.css")} />
+				<script src={asset("/img-fallback.js")} />
+				<script type="importmap" dangerouslySetInnerHTML={{ __html: importMap }} />
+				<script type="module" src={clientModule("islands/ThemeSwitcher.tsx")} />
 			</head>
 			<body>
-				<Component />
+				{props.children}
 			</body>
 		</html>
 	);
-});
+}

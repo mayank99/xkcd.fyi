@@ -1,7 +1,7 @@
-import { HttpError, type PageProps } from "fresh";
+import { HttpError } from "../utils.ts";
 import { Header } from "../components/Header.tsx";
 
-export default function ErrorPage({ error }: PageProps) {
+export default function ErrorPage({ error }: { error: unknown }) {
 	let h1 = "Something went wrong…";
 
 	if (error instanceof HttpError && error.status === 404) {

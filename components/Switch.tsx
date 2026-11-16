@@ -4,7 +4,7 @@ import type { ComponentProps } from "preact";
 export function Switch(
 	{ label, id = useId(), ...props }:
 		& { label: string }
-		& ComponentProps<"input">,
+		& Omit<ComponentProps<"input">, "type" | "role">,
 ) {
 	return (
 		<label for={id} class="form-group">

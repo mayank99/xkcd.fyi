@@ -1,7 +1,6 @@
-import { HttpError, page } from "fresh";
+import { type DataOf, type Handlers, HttpError, type PageProps } from "../utils.ts";
 import { Comic } from "../components/Comic.tsx";
 import { Header } from "../components/Header.tsx";
-import { define } from "../utils.ts";
 import { getXkcd } from "../api/getXkcd.ts";
 import { getTranscript } from "../api/getTranscript.ts";
 import { Transcript } from "../components/Transcript.tsx";
@@ -15,28 +14,27 @@ const cacheControl = {
 	old: `public, max-age=60, s-maxage=${ONE_DAY * 30}, stale-while-revalidate=${ONE_DAY * 30 * 3}`, // longer for old comics
 };
 
-export const handler = define.handlers({
-	GET: async ({ params, state }) => {
+export const handler = {
+	GET: async ({ params }) => {
 		const number = Number(params.number);
 
 		const [xkcd, latestXkcd] = await Promise.all([getXkcd(number), getXkcd()]);
 		if (!xkcd || !latestXkcd) throw new HttpError(404);
 		const transcript = await getTranscript(xkcd);
 
-		// for <head>
-		state.title = `${xkcd.num}: ${xkcd.title}`;
-
 		const isLatest = number === latestXkcd?.num;
 
-		return page({ xkcd, transcript, latestXkcd }, {
+		return {
+			data: { xkcd, transcript, latestXkcd },
+			title: `${xkcd.num}: ${xkcd.title}`, // for <head>
 			headers: {
 				"Cache-Control": isLatest ? cacheControl.latest : cacheControl.old,
 			},
-		});
+		};
 	},
-});
+} satisfies Handlers<unknown>;
 
-export default define.page<typeof handler>(({ data }) => {
+export default function Page({ data }: PageProps<DataOf<typeof handler>>) {
 	return (
 		<>
 			<Header />
@@ -50,4 +48,4 @@ export default define.page<typeof handler>(({ data }) => {
 			/>
 		</>
 	);
-});
+}
