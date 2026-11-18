@@ -22,13 +22,14 @@ export const handler = {
 		if (!xkcd || !latestXkcd) throw new HttpError(404);
 		const transcript = await getTranscript(xkcd);
 
-		const isLatest = number === latestXkcd?.num;
+		// matching 1 week period from getTranscript
+		const isRecent = Date.now() - Date.parse(xkcd.published) < 7 * ONE_DAY * 1000;
 
 		return {
 			data: { xkcd, transcript, latestXkcd },
 			title: `${xkcd.num}: ${xkcd.title}`, // for <head>
 			headers: {
-				"Cache-Control": isLatest ? cacheControl.latest : cacheControl.old,
+				"Cache-Control": isRecent ? cacheControl.latest : cacheControl.old,
 			},
 		};
 	},

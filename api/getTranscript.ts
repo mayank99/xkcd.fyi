@@ -66,7 +66,7 @@ async function fetchTranscript(url: string) {
 		if (!element) break;
 		if (element.id === "Discussion") break;
 		if (element.localName === "p" && element.querySelector("#discussion")) continue;
-		if (element.localName === "table") continue;
+		if (element.localName === "table" || element.querySelector(":scope > table")) continue;
 		if (["h1", "h2", "h3", "h4", "h5"].includes(element.localName)) break;
 		if (
 			element.localName === "p" &&
